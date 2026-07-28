@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    function isEditor() {
+      return isAdmin() || (signedIn() && request.auth.token.editor == true);
+    }
+
+    function validImage() {
+      return request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /catalog/{allPaths=**} {
+      allow read: if true;
+      allow write: if isEditor() && validImage();
+    }
+
+    match /guide_profiles/{allPaths=**} {
+      allow read: if true;
+      allow write: if isEditor() && validImage();
+    }
+
+    match /review_uploads/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && validImage();
+      allow update, delete: if isAdmin()
+        || (signedIn() && request.auth.uid == userId);
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

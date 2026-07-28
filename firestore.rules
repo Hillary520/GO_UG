@@ -1,0 +1,131 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owns(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return signedIn() && request.auth.token.admin == true;
+    }
+
+    function isEditor() {
+      return isAdmin() || (signedIn() && request.auth.token.editor == true);
+    }
+
+    function isModerator() {
+      return isAdmin() || (signedIn() && request.auth.token.moderator == true);
+    }
+
+    function published() {
+      return resource.data.status == "published";
+    }
+
+    match /users/{userId} {
+      allow create, read, update, delete: if owns(userId);
+      allow read, update: if isAdmin();
+    }
+
+    match /destinations/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /activities/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /accommodations/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /food_places/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /guides/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /articles/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /itinerary_templates/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /featured_items/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isEditor();
+    }
+
+    match /sponsored_placements/{documentId} {
+      allow read: if published() || isEditor();
+      allow write: if isAdmin();
+    }
+
+    match /user_trips/{tripId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if signedIn()
+        && resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if resource.data.status == "published"
+        || (signedIn() && resource.data.userId == request.auth.uid)
+        || isModerator();
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == "pending"
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+      allow update, delete: if isModerator();
+    }
+
+    match /reports/{reportId} {
+      allow create: if signedIn()
+        && request.resource.data.reporterId == request.auth.uid;
+      allow read, update, delete: if isModerator();
+    }
+
+    match /bookings/{bookingId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == "draft";
+      allow read: if signedIn()
+        && resource.data.userId == request.auth.uid;
+      allow read, update: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read, update: if signedIn()
+        && resource.data.userId == request.auth.uid;
+      allow create, delete: if isAdmin();
+    }
+
+    match /payment_events/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /audit_logs/{eventId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+  }
+}

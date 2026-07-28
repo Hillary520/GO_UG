@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.env.local
+.firebase
+firebase-debug.log
+*.tsbuildinfo
+.DS_Store
+android/.gradle
+android/local.properties
+android/app/build
+*.docx
+*.pdf

@@ -20,6 +20,7 @@ connected.
 - Firebase configuration, repository fallback, Firestore rules, Storage rules
   and emulator configuration.
 - Capacitor Android project targeting Android 16 / API 36.
+- OpenAI Sites worker packaging with SPA route fallback.
 
 Payments, provider availability, user reviews and transactional messaging are
 deliberately represented as upcoming functionality.

@@ -3,7 +3,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 const config: CapacitorConfig = {
   appId: "com.goug.travel",
   appName: "GoUG",
-  webDir: "dist",
+  webDir: "dist/client",
   backgroundColor: "#0b2418",
   android: {
     allowMixedContent: false

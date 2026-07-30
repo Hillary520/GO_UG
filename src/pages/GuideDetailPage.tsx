@@ -8,15 +8,15 @@ import {
   ShieldCheck,
   Star
 } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { guides } from "@/data/catalog";
+import { Link, useParams } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
+import { useSmartBack } from "@/lib/useSmartBack";
 
 export function GuideDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { notify } = useApp();
-  const guide = guides.find((entry) => entry.id === id);
+  const goBack = useSmartBack("/guides");
+  const { guideItems } = useApp();
+  const guide = guideItems.find((entry) => entry.id === id);
 
   if (!guide) {
     return (
@@ -39,7 +39,7 @@ export function GuideDetailPage() {
         <div className="detail-hero__nav">
           <button
             className="icon-button icon-button--glass"
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             aria-label="Go back"
           >
             <ArrowLeft size={21} />
@@ -54,7 +54,9 @@ export function GuideDetailPage() {
             {guide.verified && <BadgeCheck size={25} fill="var(--sun)" />}
           </div>
           <div>
-            <p className="eyebrow">GoUG verified guide</p>
+            <p className="eyebrow">
+              {guide.verified ? "GoUG verified guide" : "Guide profile"}
+            </p>
             <h1>{guide.name}</h1>
             <span>
               <MapPin size={15} />
@@ -107,40 +109,38 @@ export function GuideDetailPage() {
                 ))}
               </div>
             </section>
-            <section className="verified-note">
-              <ShieldCheck size={23} />
-              <div>
-                <strong>Verified by the GoUG team</strong>
-                <p>
-                  Identity, references and local guiding experience have been
-                  checked.
-                </p>
-              </div>
-            </section>
+            {guide.verified && (
+              <section className="verified-note">
+                <ShieldCheck size={23} />
+                <div>
+                  <strong>Verified by the GoUG team</strong>
+                  <p>
+                    Identity, references and local guiding experience have been
+                    checked.
+                  </p>
+                </div>
+              </section>
+            )}
           </div>
 
           <aside className="detail-booking guide-profile__booking">
             <p className="eyebrow">Plan a day together</p>
             <h2>{guide.priceLabel}</h2>
             <p>Tell us your dates and interests. No payment is taken yet.</p>
-            <button
+            <Link
               className="button button--sun button--full"
-              onClick={() =>
-                notify("Guide requests are coming in the next release")
-              }
+              to={`/request/guide/${guide.id}`}
             >
               <CalendarDays size={18} />
               Request dates
-            </button>
-            <button
+            </Link>
+            <Link
               className="button button--outline button--full"
-              onClick={() =>
-                notify("Messaging will open once bookings are enabled")
-              }
+              to={`/messages/${guide.id}`}
             >
               <MessageCircle size={18} />
               Ask a question
-            </button>
+            </Link>
           </aside>
         </div>
       </div>

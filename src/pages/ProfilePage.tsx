@@ -1,10 +1,8 @@
 import {
-  Bell,
   ChevronRight,
   CircleHelp,
   Globe2,
   Heart,
-  Languages,
   LogOut,
   Map,
   Shield,
@@ -13,8 +11,8 @@ import {
   UserRound,
   Wrench
 } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { catalog } from "@/data/catalog";
 import { CatalogCard } from "@/components/CatalogCard";
 import { SectionHeading } from "@/components/SectionHeading";
 import { useApp } from "@/context/AppContext";
@@ -24,12 +22,14 @@ export function ProfilePage() {
     user,
     setAuthOpen,
     signOut,
+    deleteAccount,
     savedIds,
     tripIds,
-    notify
+    catalogItems
   } = useApp();
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const savedItems = savedIds
-    .map((id) => catalog.find((item) => item.id === id))
+    .map((id) => catalogItems.find((item) => item.id === id))
     .filter(Boolean);
 
   return (
@@ -95,53 +95,23 @@ export function ProfilePage() {
       <section className="settings-section">
         <p className="eyebrow">Preferences</p>
         <div className="settings-list">
-          <button onClick={() => notify("English is selected")}>
-            <span className="settings-list__icon">
-              <Languages size={19} />
-            </span>
-            <span>
-              <strong>Language</strong>
-              <small>English</small>
-            </span>
-            <ChevronRight size={18} />
-          </button>
-          <button onClick={() => notify("UGX is selected")}>
-            <span className="settings-list__icon">
-              <Globe2 size={19} />
-            </span>
-            <span>
-              <strong>Currency</strong>
-              <small>UGX · Ugandan shilling</small>
-            </span>
-            <ChevronRight size={18} />
-          </button>
-          <button onClick={() => notify("Notification settings are coming soon")}>
-            <span className="settings-list__icon">
-              <Bell size={19} />
-            </span>
-            <span>
-              <strong>Notifications</strong>
-              <small>Trip reminders and useful updates</small>
-            </span>
-            <ChevronRight size={18} />
-          </button>
-          <button onClick={() => notify("Interest preferences are coming soon")}>
+          <Link to="/preferences">
             <span className="settings-list__icon">
               <SlidersHorizontal size={19} />
             </span>
             <span>
-              <strong>Travel interests</strong>
-              <small>Safari, food and culture</small>
+              <strong>Travel preferences</strong>
+              <small>Language, currency, interests and reminders</small>
             </span>
             <ChevronRight size={18} />
-          </button>
+          </Link>
         </div>
       </section>
 
       <section className="settings-section">
         <p className="eyebrow">GoUG</p>
         <div className="settings-list">
-          <button onClick={() => notify("Support centre is being prepared")}>
+          <Link to="/support">
             <span className="settings-list__icon">
               <CircleHelp size={19} />
             </span>
@@ -150,8 +120,8 @@ export function ProfilePage() {
               <small>Questions, safety and contacts</small>
             </span>
             <ChevronRight size={18} />
-          </button>
-          <button onClick={() => notify("Privacy policy placeholder opened")}>
+          </Link>
+          <Link to="/privacy">
             <span className="settings-list__icon">
               <Shield size={19} />
             </span>
@@ -160,23 +130,21 @@ export function ProfilePage() {
               <small>How GoUG looks after your data</small>
             </span>
             <ChevronRight size={18} />
-          </button>
+          </Link>
           <Link to="/admin">
             <span className="settings-list__icon">
               <Wrench size={19} />
             </span>
             <span>
-              <strong>Demo content studio</strong>
-              <small>Preview the GoUG admin workspace</small>
+              <strong>Content studio</strong>
+              <small>Manage places, guides and moderation</small>
             </span>
             <ChevronRight size={18} />
           </Link>
           {user && (
             <button
               className="settings-list__danger"
-              onClick={() =>
-                notify("Account deletion will be connected with Firebase")
-              }
+              onClick={() => setConfirmDelete(true)}
             >
               <span className="settings-list__icon">
                 <Trash2 size={19} />
@@ -193,8 +161,36 @@ export function ProfilePage() {
 
       <footer className="profile-footer">
         <strong>GoUG</strong>
-        <span>Version 0.1 · Built with care in Uganda</span>
+        <span>Version 1.0 · Built with care in Uganda</span>
       </footer>
+      {confirmDelete && (
+        <div className="confirm-card" role="dialog" aria-modal="true">
+          <div>
+            <h2>Delete your account?</h2>
+            <p>
+              This removes your saved places, trips, requests, messages and
+              reviews from this device and deletes the Firebase account.
+            </p>
+            <div>
+              <button
+                className="button button--outline"
+                onClick={() => setConfirmDelete(false)}
+              >
+                Keep account
+              </button>
+              <button
+                className="button button--dark"
+                onClick={async () => {
+                  const deleted = await deleteAccount();
+                  if (deleted) setConfirmDelete(false);
+                }}
+              >
+                Delete account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,8 @@
 # GoUG
 
 GoUG is a mobile-first Uganda travel companion built with React, TypeScript,
-Firebase and Capacitor. It currently runs with a complete seeded catalogue and
-local persistence, so the product can be reviewed before a Firebase project is
-connected.
+Firebase, MapLibre and Capacitor. It runs as a public PWA and as an Android
+WebView app backed by the same GitHub Pages deployment.
 
 Public web app: <https://hillary520.github.io/GO_UG/>
 
@@ -11,21 +10,26 @@ Public web app: <https://hillary520.github.io/GO_UG/>
 
 - Branded welcome and guest/sign-in entry.
 - Mobile-first Discover experience with search and category filters.
+- Built-in interactive Uganda map, geolocation and place markers.
 - Featured activity, destination and sponsored accommodation carousel.
 - Uganda destination, safari, culture, food, stay and adventure catalogue.
-- Place details, Maps links, sharing, saving and itinerary actions.
+- Place details, embedded maps, directions, sharing, saving and itinerary actions.
 - Curated trip templates and a working local itinerary builder.
 - Verified tour-guide directory and profiles.
-- Profile, preferences, saved places and account-management placeholders.
-- Responsive content-studio/admin preview.
+- Email/Google authentication, notifications, preferences, support, privacy and
+  account deletion.
+- Availability and guide requests, confirmations, cancellations and trip status.
+- Guide messaging and moderated traveller reviews.
+- Responsive content studio for places, map coordinates, featured and sponsored
+  placements, bookings and moderation.
 - PWA installation and offline app-shell caching.
 - Firebase configuration, repository fallback, Firestore rules, Storage rules
   and emulator configuration.
 - Capacitor Android project targeting Android 16 / API 36.
 - OpenAI Sites worker packaging with SPA route fallback.
 
-Payments, provider availability, user reviews and transactional messaging are
-deliberately represented as upcoming functionality.
+Payments remain intentionally excluded from this release. Booking requests do
+not collect money.
 
 ## Run locally
 
@@ -44,21 +48,18 @@ npm test
 npm run build
 ```
 
-## Connect Firebase
+## Firebase
 
-1. Create separate Firebase projects for development, staging and production.
-2. Enable Authentication providers for Email/Password and Google.
-3. Create Firestore and Storage in a region selected for GoUG's users and legal
-   requirements.
-4. Copy `.env.example` to `.env.local` and add the web app credentials.
-5. Install and sign in to Firebase CLI.
-6. Select the correct project and deploy rules/indexes before adding production
-   data.
-7. Enable App Check before public release.
+The repository is connected to Firebase project `tourism-9e002`. Authentication
+and Firestore are configured through the Firebase CLI. Deploy current database
+rules and indexes with:
 
-When configured, `src/lib/contentRepository.ts` reads published Firebase
-content and falls back to the seeded catalogue if the project is unavailable or
-empty.
+```bash
+firebase deploy --only firestore:rules,firestore:indexes
+```
+
+The app remains local-first, so saved content and requests still work when the
+network is weak. Signed-in writes are also sent to Firestore.
 
 ## Android
 
@@ -69,19 +70,20 @@ npm run android:sync
 npm run android:open
 ```
 
-Android Studio is required for signing, emulator/device testing, and creating
-the release Android App Bundle. The Android container loads the public GitHub
-Pages deployment and the PWA service worker retains its app shell for weak
-connections. Replace the generated launcher art and verify the current Google
-Play target API requirement before submission.
+Android Studio is required for release signing and creating the Play Store
+Android App Bundle. The debug APK can be built with:
+
+```bash
+npm run android:sync
+cd android && ./gradlew assembleDebug
+```
 
 ## Important production work
 
 - Replace demonstration images and copy with licensed, partner-approved content.
-- Connect real account deletion in Firebase and publish its public web endpoint.
-- Add legal privacy, terms, community, cancellation and support pages.
 - Configure custom claims for editor, moderator and administrator roles.
-- Keep bookings and later payments behind trusted Cloud Functions.
-- Add real moderation before enabling public reviews or uploads.
+- Move booking confirmation and moderation writes behind trusted Cloud
+  Functions before giving partners production access.
+- Enable Firebase App Check.
 - Complete Data safety, content-rating, advertising and reviewer-access forms in
   Play Console.

@@ -9,18 +9,22 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:journeys": "node scripts/run-mobile-journeys.mjs",
     "android:add": "cap add android",
     "android:sync": "npm run build && cap sync android",
     "android:open": "cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
+    "@capacitor/app": "^7.1.2",
     "@capacitor/core": "^7.4.3",
+    "@capacitor/geolocation": "^7.1.8",
     "firebase": "^12.1.0",
     "lucide-react": "^0.468.0",
+    "maplibre-gl": "^5.24.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "7.18.1"
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.3",

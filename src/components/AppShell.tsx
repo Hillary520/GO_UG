@@ -1,7 +1,8 @@
 import {
   Compass,
   Heart,
-  Map,
+  MapPinned,
+  Route,
   ShieldCheck,
   UserRound
 } from "lucide-react";
@@ -11,8 +12,9 @@ import { useApp } from "@/context/AppContext";
 
 const navItems = [
   { to: "/", label: "Discover", icon: Compass },
-  { to: "/trips", label: "Trips", icon: Map },
-  { to: "/guides", label: "Guide", icon: ShieldCheck },
+  { to: "/map", label: "Map", icon: MapPinned },
+  { to: "/trips", label: "Trips", icon: Route },
+  { to: "/guides", label: "Guides", icon: ShieldCheck },
   { to: "/profile", label: "Profile", icon: UserRound }
 ];
 
@@ -21,7 +23,10 @@ export function AppShell() {
   const { savedIds } = useApp();
   const isDetail =
     location.pathname.startsWith("/places/") ||
-    location.pathname.startsWith("/guides/");
+    location.pathname.startsWith("/guides/") ||
+    location.pathname.startsWith("/messages/") ||
+    location.pathname.startsWith("/request/") ||
+    ["/preferences", "/support", "/privacy"].includes(location.pathname);
   const isAdmin = location.pathname.startsWith("/admin");
 
   return (
@@ -33,6 +38,7 @@ export function AppShell() {
             <NavLink
               key={to}
               to={to}
+              replace
               end={to === "/"}
               className={({ isActive }) =>
                 `desktop-rail__link ${isActive ? "is-active" : ""}`
@@ -65,6 +71,7 @@ export function AppShell() {
             <NavLink
               key={to}
               to={to}
+              replace
               end={to === "/"}
               aria-label={label}
               className={({ isActive }) =>

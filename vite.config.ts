@@ -35,6 +35,7 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ["**/*.{js,css,html,svg,woff2}"],
+          globIgnores: ["**/MapCanvas-*.js", "**/MapCanvas-*.css"],
           navigateFallback: "index.html",
           runtimeCaching: [
             {
@@ -45,6 +46,17 @@ export default defineConfig(({ mode }) => {
                 expiration: {
                   maxEntries: 40,
                   maxAgeSeconds: 60 * 60 * 24 * 30
+                }
+              }
+            },
+            {
+              urlPattern: /^https:\/\/tiles\.openfreemap\.org\//,
+              handler: "StaleWhileRevalidate",
+              options: {
+                cacheName: "goug-map-assets",
+                expiration: {
+                  maxEntries: 120,
+                  maxAgeSeconds: 60 * 60 * 24 * 7
                 }
               }
             }

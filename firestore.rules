@@ -106,10 +106,26 @@ service cloud.firestore {
     match /bookings/{bookingId} {
       allow create: if signedIn()
         && request.resource.data.userId == request.auth.uid
-        && request.resource.data.status == "draft";
+        && request.resource.data.status == "pending";
       allow read: if signedIn()
         && resource.data.userId == request.auth.uid;
       allow read, update: if isAdmin();
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["status"])
+        && request.resource.data.status == "cancelled";
+      allow delete: if false;
+    }
+
+    match /guide_messages/{messageId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.sender == "traveller";
+      allow read: if signedIn()
+        && resource.data.userId == request.auth.uid;
+      allow read: if isAdmin();
       allow update, delete: if false;
     }
 

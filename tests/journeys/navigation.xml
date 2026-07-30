@@ -1,0 +1,69 @@
+<journeys>
+  <journey name="Detail navigation and scroll restoration">
+    <description>New detail screens start at the top and returning restores the discovery position.</description>
+    <actions>
+      <action>Open the app and complete onboarding</action>
+      <action>Scroll to the discovery catalogue</action>
+      <action>Open the first catalogue place</action>
+      <action>Verify that the place detail screen starts at the top</action>
+      <action>Tap the detail back button</action>
+      <action>Verify that discovery returns to its previous scroll position</action>
+    </actions>
+  </journey>
+  <journey name="Primary tab navigation">
+    <description>Every primary tab opens at its own top position without carrying scroll from another page.</description>
+    <actions>
+      <action>Scroll down on Discover</action>
+      <action>Tap the Trips tab</action>
+      <action>Verify that Trips starts at the top</action>
+      <action>Scroll down on Trips</action>
+      <action>Tap the Guides tab</action>
+      <action>Verify that Guides starts at the top</action>
+    </actions>
+  </journey>
+  <journey name="Direct detail fallback and modal dismissal">
+    <description>Direct links have a safe back destination and modal state does not leak into navigation.</description>
+    <actions>
+      <action>Open a guide profile directly</action>
+      <action>Tap the detail back button</action>
+      <action>Verify that the Guides page opens at the top</action>
+      <action>Open the sign-in sheet</action>
+      <action>Verify that background scrolling is locked</action>
+      <action>Dismiss the sign-in sheet with Escape</action>
+      <action>Verify that background scrolling is restored</action>
+    </actions>
+  </journey>
+  <journey name="Built-in map">
+    <description>The map loads inside GoUG and exposes every mapped place without leaving the app.</description>
+    <actions>
+      <action>Open the Map tab</action>
+      <action>Wait for the interactive map</action>
+      <action>Verify that Uganda place markers are visible</action>
+    </actions>
+  </journey>
+  <journey name="Booking request and confirmation">
+    <description>A traveller can request a place and the content studio can confirm it without payment.</description>
+    <actions>
+      <action>Request availability for Bwindi</action>
+      <action>Verify the pending request in Trips</action>
+      <action>Confirm the request in Content studio</action>
+      <action>Verify the confirmed request in Trips</action>
+    </actions>
+  </journey>
+  <journey name="Guide messaging and preferences">
+    <description>Guide conversations and traveller preferences persist through navigation.</description>
+    <actions>
+      <action>Send a message to a guide</action>
+      <action>Update language and currency</action>
+      <action>Verify preferences were persisted</action>
+    </actions>
+  </journey>
+  <journey name="Review moderation">
+    <description>The content studio can publish a pending traveller review and the public place page displays it.</description>
+    <actions>
+      <action>Seed a pending traveller review</action>
+      <action>Publish the review in Content studio</action>
+      <action>Verify the review appears on the place page</action>
+    </actions>
+  </journey>
+</journeys>

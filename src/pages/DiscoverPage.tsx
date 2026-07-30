@@ -9,14 +9,23 @@ import {
   Sparkles,
   Star
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CatalogCard } from "@/components/CatalogCard";
 import { SectionHeading } from "@/components/SectionHeading";
-import { catalog, categories, featured, guides } from "@/data/catalog";
+import { categories } from "@/data/catalog";
 import { useApp } from "@/context/AppContext";
 
 export function DiscoverPage() {
-  const { user, setAuthOpen, notify } = useApp();
+  const navigate = useNavigate();
+  const {
+    user,
+    setAuthOpen,
+    setNotificationsOpen,
+    notifications,
+    catalogItems,
+    guideItems,
+    notify
+  } = useApp();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [showAll, setShowAll] = useState(false);
@@ -24,7 +33,7 @@ export function DiscoverPage() {
 
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    return catalog.filter((item) => {
+    return catalogItems.filter((item) => {
       const matchesCategory =
         category === "All" || item.category === category;
       const matchesQuery =
@@ -41,7 +50,7 @@ export function DiscoverPage() {
           .includes(normalized);
       return matchesCategory && matchesQuery;
     });
-  }, [category, query]);
+  }, [catalogItems, category, query]);
 
   const filtered = showAll ? results : results.slice(0, 6);
   const firstName = user?.displayName.split(" ")[0];
@@ -57,14 +66,19 @@ export function DiscoverPage() {
           <button
             className="icon-button"
             aria-label="Notifications"
-            onClick={() => notify("You're all caught up")}
+            onClick={() => setNotificationsOpen(true)}
           >
             <Bell size={20} />
-            <span className="status-dot" />
+            {notifications.some((item) => !item.read) && (
+              <span className="status-dot" />
+            )}
           </button>
           <button
             className="avatar avatar--small"
-            onClick={() => !user && setAuthOpen(true)}
+            onClick={() => {
+              if (user) navigate("/profile");
+              else setAuthOpen(true);
+            }}
             aria-label={user ? "Open profile" : "Sign in"}
           >
             {user?.initials || "GU"}
@@ -134,7 +148,9 @@ export function DiscoverPage() {
               title="Start with something remarkable"
             />
             <div className="featured-track">
-              {featured.map((item, index) => (
+              {catalogItems
+                .filter((item) => item.featured && item.status === "published")
+                .map((item, index) => (
                 <Link
                   to={`/places/${item.id}`}
                   className="featured-card"
@@ -176,7 +192,10 @@ export function DiscoverPage() {
             </div>
           </section>
 
-          <section className="nearby-strip">
+          <button
+            className="nearby-strip"
+            onClick={() => navigate("/map")}
+          >
             <span className="nearby-strip__icon">
               <LocateFixed size={22} />
             </span>
@@ -185,11 +204,11 @@ export function DiscoverPage() {
               <small>Beautiful places around Kampala</small>
             </span>
             <ChevronRight size={20} />
-          </section>
+          </button>
 
           <section className="guide-callout">
             <div className="guide-callout__faces">
-              {guides.slice(0, 3).map((guide) => (
+              {guideItems.slice(0, 3).map((guide) => (
                 <img key={guide.id} src={guide.image} alt="" />
               ))}
             </div>

@@ -1,19 +1,31 @@
-import { CalendarDays, MapPin, Plus, Route, Sparkles, X } from "lucide-react";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Clock3,
+  MapPin,
+  Plus,
+  Route,
+  Sparkles,
+  X
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { SectionHeading } from "@/components/SectionHeading";
-import { catalog, tripTemplates } from "@/data/catalog";
+import { tripTemplates } from "@/data/catalog";
 import { useApp } from "@/context/AppContext";
 
 export function TripsPage() {
   const {
     tripIds,
+    catalogItems,
+    bookings,
+    updateBookingStatus,
     addTemplateToTrip,
     removeFromTrip,
     user,
     setAuthOpen
   } = useApp();
   const tripItems = tripIds
-    .map((id) => catalog.find((item) => item.id === id))
+    .map((id) => catalogItems.find((item) => item.id === id))
     .filter(Boolean);
 
   return (
@@ -132,16 +144,63 @@ export function TripsPage() {
         </div>
       </section>
 
-      <section className="coming-soon-card">
-        <div>
-          <p className="eyebrow eyebrow--light">Bookings</p>
-          <h2>A calmer way to keep track.</h2>
-          <p>
-            Booking requests and payment confirmations will live here when the
-            next phase opens.
-          </p>
-        </div>
-        <span>Coming next</span>
+      <section className="content-section request-section">
+        <SectionHeading
+          eyebrow="Requests"
+          title={
+            bookings.length
+              ? "Availability and guide requests"
+              : "No requests yet"
+          }
+        />
+        {bookings.length ? (
+          <div className="request-list">
+            {bookings.map((request) => (
+              <article key={request.id}>
+                <span
+                  className={`request-list__status request-list__status--${request.status}`}
+                >
+                  {request.status === "confirmed" ? (
+                    <CheckCircle2 size={14} />
+                  ) : (
+                    <Clock3 size={14} />
+                  )}
+                  {request.status}
+                </span>
+                <div>
+                  <small>{request.kind === "guide" ? "Local guide" : "Place"}</small>
+                  <h3>{request.title}</h3>
+                  <p>
+                    {new Date(`${request.date}T12:00:00`).toLocaleDateString(
+                      undefined,
+                      { day: "numeric", month: "short", year: "numeric" }
+                    )}{" "}
+                    · {request.guests} traveller
+                    {request.guests === 1 ? "" : "s"}
+                  </p>
+                </div>
+                {request.status !== "cancelled" && (
+                  <button
+                    className="text-button"
+                    onClick={() =>
+                      updateBookingStatus(request.id, "cancelled")
+                    }
+                  >
+                    Cancel
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="trip-empty trip-empty--small">
+            <CalendarDays size={25} />
+            <p>
+              Request a place or guide and it will be organised here. No
+              payment is taken.
+            </p>
+          </div>
+        )}
       </section>
     </div>
   );

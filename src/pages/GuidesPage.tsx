@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
 import { BadgeCheck, MapPin, Search, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import { guides } from "@/data/catalog";
+import { useApp } from "@/context/AppContext";
 
 export function GuidesPage() {
+  const { guideItems } = useApp();
   const [query, setQuery] = useState("");
   const filtered = useMemo(() => {
     const normalized = query.toLowerCase().trim();
-    if (!normalized) return guides;
-    return guides.filter((guide) =>
+    if (!normalized) return guideItems;
+    return guideItems.filter((guide) =>
       [
         guide.name,
         guide.location,
@@ -19,7 +20,7 @@ export function GuidesPage() {
         .toLowerCase()
         .includes(normalized)
     );
-  }, [query]);
+  }, [guideItems, query]);
 
   return (
     <div className="page page--guides">

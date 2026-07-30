@@ -10,15 +10,40 @@ import {
   Share2,
   Star
 } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { catalog } from "@/data/catalog";
+import { lazy, Suspense, useState, type FormEvent } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
+import { useSmartBack } from "@/lib/useSmartBack";
+
+const MapCanvas = lazy(() =>
+  import("@/components/MapCanvas").then((module) => ({
+    default: module.MapCanvas
+  }))
+);
 
 export function PlaceDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { savedIds, toggleSaved, addToTrip, notify } = useApp();
-  const item = catalog.find((entry) => entry.id === id);
+  const goBack = useSmartBack("/");
+  const {
+    user,
+    setAuthOpen,
+    savedIds,
+    catalogItems,
+    reviews,
+    toggleSaved,
+    addToTrip,
+    addReview,
+    notify
+  } = useApp();
+  const [rating, setRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const item = catalogItems.find((entry) => entry.id === id);
+  const itemReviews = reviews.filter(
+    (review) =>
+      review.entityId === id &&
+      (review.status === "published" ||
+        (user && review.author === user.displayName))
+  );
 
   if (!item) {
     return (
@@ -52,6 +77,24 @@ export function PlaceDetailPage() {
     }
   };
 
+  const submitReview = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!user) {
+      setAuthOpen(true);
+      return;
+    }
+    if (reviewText.trim().length < 10) {
+      notify("Share at least a sentence");
+      return;
+    }
+    await addReview({
+      entityId: item.id,
+      rating,
+      text: reviewText.trim()
+    });
+    setReviewText("");
+  };
+
   return (
     <article className="detail-page">
       <header
@@ -62,7 +105,7 @@ export function PlaceDetailPage() {
         <div className="detail-hero__nav">
           <button
             className="icon-button icon-button--glass"
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             aria-label="Go back"
           >
             <ArrowLeft size={21} />
@@ -126,16 +169,19 @@ export function PlaceDetailPage() {
           </section>
 
           <section className="detail-section">
-            <div className="detail-map">
-              <div className="detail-map__pattern" />
-              <span className="detail-map__pin">
-                <MapPin size={22} fill="currentColor" />
-              </span>
+            <div className="detail-map-live">
+              <Suspense
+                fallback={<div className="goug-map map-loading">Loading map…</div>}
+              >
+                <MapCanvas places={[item]} compact />
+              </Suspense>
               <div>
-                <p className="eyebrow">Find your way</p>
-                <h2>{item.region}</h2>
+                <span>
+                  <p className="eyebrow">Find your way</p>
+                  <strong>{item.region}</strong>
+                </span>
                 <a href={mapsUrl} target="_blank" rel="noreferrer">
-                  Open in Maps <ExternalLink size={15} />
+                  Open directions <ExternalLink size={15} />
                 </a>
               </div>
             </div>
@@ -150,9 +196,50 @@ export function PlaceDetailPage() {
               </span>
             </div>
             <blockquote>
-              “GoUG's picks are still being gathered from trusted local
-              travellers. Reviews will open with moderation in the next phase.”
+              “A standout GoUG pick for travellers who want a deeper sense of
+              place, with enough time to experience it unhurried.”
             </blockquote>
+            {itemReviews.length > 0 && (
+              <div className="review-list">
+                {itemReviews.map((review) => (
+                  <article key={review.id}>
+                    <div>
+                      <strong>{review.author}</strong>
+                      <span>{"★".repeat(review.rating)}</span>
+                    </div>
+                    <p>{review.text}</p>
+                    {review.status === "pending" && <small>Under review</small>}
+                  </article>
+                ))}
+              </div>
+            )}
+            <form
+              className="review-form"
+              onSubmit={(event) => void submitReview(event)}
+            >
+              <strong>Share your experience</strong>
+              <div className="review-form__stars" aria-label="Rating">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={value <= rating ? "is-active" : ""}
+                    onClick={() => setRating(value)}
+                    aria-label={`${value} star${value === 1 ? "" : "s"}`}
+                  >
+                    <Star size={19} fill="currentColor" />
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewText}
+                onChange={(event) => setReviewText(event.target.value)}
+                placeholder="What should another traveller know?"
+              />
+              <button className="button button--outline">
+                {user ? "Submit review" : "Sign in to review"}
+              </button>
+            </form>
           </section>
         </div>
 
@@ -184,21 +271,13 @@ export function PlaceDetailPage() {
             <CalendarPlus size={18} />
             Add to my trip
           </button>
-          <button
+          <Link
             className="button button--sun button--full"
-            onClick={() =>
-              notify(
-                item.category === "Stay"
-                  ? "Partner stays are being verified"
-                  : "Booking requests are coming in the next release"
-              )
-            }
+            to={`/request/place/${item.id}`}
           >
             <Navigation size={18} />
-            {item.category === "Stay"
-              ? "Check partner options"
-              : "Request availability"}
-          </button>
+            Request availability
+          </Link>
           <small>No payment will be taken yet.</small>
         </aside>
       </div>

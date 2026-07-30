@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function Brand({ compact = false }: { compact?: boolean }) {
   return (
-    <Link to="/" className="brand" aria-label="GoUG home">
+    <Link to="/" replace className="brand" aria-label="GoUG home">
       <span className="brand__mark" aria-hidden="true">
         <span />
       </span>

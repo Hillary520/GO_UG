@@ -33,7 +33,7 @@ export function MapCanvas({
       container: containerRef.current,
       style: "https://tiles.openfreemap.org/styles/liberty",
       center: first ? [first.lng, first.lat] : UGANDA_CENTER,
-      zoom: compact && first ? 10 : 5.6,
+      zoom: first && (compact || mapped.length === 1) ? 10 : 5.6,
       attributionControl: {}
     });
 

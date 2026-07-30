@@ -1,15 +1,15 @@
 import {
-  ChevronRight,
+  ArrowUpRight,
   CircleHelp,
   Globe2,
   Heart,
+  LayoutDashboard,
   LogOut,
   Map,
   Shield,
   SlidersHorizontal,
   Trash2,
-  UserRound,
-  Wrench
+  UserRound
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -81,6 +81,18 @@ export function ProfilePage() {
         </div>
       </section>
 
+      <Link to="/admin" className="admin-entry-card">
+        <span>
+          <LayoutDashboard size={22} />
+        </span>
+        <div>
+          <p className="eyebrow eyebrow--light">GoUG Admin</p>
+          <h2>Open admin dashboard</h2>
+          <p>Manage places, bookings, guides, promotions and reviews.</p>
+        </div>
+        <ArrowUpRight size={21} />
+      </Link>
+
       {savedItems.length > 0 && (
         <section className="content-section">
           <SectionHeading eyebrow="Your shortlist" title="Saved for later" />
@@ -92,68 +104,41 @@ export function ProfilePage() {
         </section>
       )}
 
-      <section className="settings-section">
-        <p className="eyebrow">Preferences</p>
-        <div className="settings-list">
-          <Link to="/preferences">
-            <span className="settings-list__icon">
+      <section className="profile-tools-section">
+        <p className="eyebrow">Traveller tools</p>
+        <div className="profile-tools">
+          <Link to="/preferences" className="profile-tool">
+            <span>
               <SlidersHorizontal size={19} />
             </span>
-            <span>
-              <strong>Travel preferences</strong>
-              <small>Language, currency, interests and reminders</small>
-            </span>
-            <ChevronRight size={18} />
+            <div>
+              <strong>Preferences</strong>
+              <small>Language, currency and reminders</small>
+            </div>
+            <ArrowUpRight size={17} />
           </Link>
-        </div>
-      </section>
-
-      <section className="settings-section">
-        <p className="eyebrow">GoUG</p>
-        <div className="settings-list">
-          <Link to="/support">
-            <span className="settings-list__icon">
+          <Link to="/support" className="profile-tool">
+            <span>
               <CircleHelp size={19} />
             </span>
-            <span>
-              <strong>Help and support</strong>
-              <small>Questions, safety and contacts</small>
-            </span>
-            <ChevronRight size={18} />
+            <div>
+              <strong>Support</strong>
+              <small>Trip, safety and account questions</small>
+            </div>
+            <ArrowUpRight size={17} />
           </Link>
+        </div>
+        <div className="profile-meta-links">
           <Link to="/privacy">
-            <span className="settings-list__icon">
-              <Shield size={19} />
-            </span>
-            <span>
-              <strong>Privacy and legal</strong>
-              <small>How GoUG looks after your data</small>
-            </span>
-            <ChevronRight size={18} />
-          </Link>
-          <Link to="/admin">
-            <span className="settings-list__icon">
-              <Wrench size={19} />
-            </span>
-            <span>
-              <strong>Content studio</strong>
-              <small>Manage places, guides and moderation</small>
-            </span>
-            <ChevronRight size={18} />
+            <Shield size={15} />
+            Privacy & legal
           </Link>
           {user && (
             <button
-              className="settings-list__danger"
               onClick={() => setConfirmDelete(true)}
             >
-              <span className="settings-list__icon">
-                <Trash2 size={19} />
-              </span>
-              <span>
-                <strong>Delete account</strong>
-                <small>Permanently remove your data</small>
-              </span>
-              <ChevronRight size={18} />
+              <Trash2 size={15} />
+              Delete account
             </button>
           )}
         </div>

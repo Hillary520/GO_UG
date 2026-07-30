@@ -39,14 +39,15 @@
       <action>Open the Map tab</action>
       <action>Wait for the interactive map</action>
       <action>Verify that Uganda place markers are visible</action>
+      <action>Open a place in the full built-in map</action>
     </actions>
   </journey>
   <journey name="Booking request and confirmation">
-    <description>A traveller can request a place and the content studio can confirm it without payment.</description>
+    <description>A traveller can request a place and the admin dashboard can confirm it without payment.</description>
     <actions>
       <action>Request availability for Bwindi</action>
       <action>Verify the pending request in Trips</action>
-      <action>Confirm the request in Content studio</action>
+      <action>Open Admin from Profile and confirm the request</action>
       <action>Verify the confirmed request in Trips</action>
     </actions>
   </journey>
@@ -59,10 +60,10 @@
     </actions>
   </journey>
   <journey name="Review moderation">
-    <description>The content studio can publish a pending traveller review and the public place page displays it.</description>
+    <description>The admin dashboard can publish a pending traveller review and the public place page displays it.</description>
     <actions>
       <action>Seed a pending traveller review</action>
-      <action>Publish the review in Content studio</action>
+      <action>Publish the review in Admin</action>
       <action>Verify the review appears on the place page</action>
     </actions>
   </journey>

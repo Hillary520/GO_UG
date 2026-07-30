@@ -57,11 +57,6 @@ export function PlaceDetailPage() {
   }
 
   const isSaved = savedIds.includes(item.id);
-  const mapsUrl = item.coordinates
-    ? `https://www.google.com/maps/search/?api=1&query=${item.coordinates.lat},${item.coordinates.lng}`
-    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        `${item.title}, Uganda`
-      )}`;
 
   const share = async () => {
     const data = {
@@ -180,9 +175,9 @@ export function PlaceDetailPage() {
                   <p className="eyebrow">Find your way</p>
                   <strong>{item.region}</strong>
                 </span>
-                <a href={mapsUrl} target="_blank" rel="noreferrer">
-                  Open directions <ExternalLink size={15} />
-                </a>
+                <Link to={`/map?place=${item.id}`}>
+                  View full map <Navigation size={15} />
+                </Link>
               </div>
             </div>
           </section>

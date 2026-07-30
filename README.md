@@ -20,7 +20,7 @@ Public web app: <https://hillary520.github.io/GO_UG/>
   account deletion.
 - Availability and guide requests, confirmations, cancellations and trip status.
 - Guide messaging and moderated traveller reviews.
-- Responsive content studio for places, map coordinates, featured and sponsored
+- Responsive admin dashboard for places, map coordinates, featured and sponsored
   placements, bookings and moderation.
 - PWA installation and offline app-shell caching.
 - Firebase configuration, repository fallback, Firestore rules, Storage rules

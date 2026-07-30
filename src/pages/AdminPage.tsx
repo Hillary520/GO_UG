@@ -146,7 +146,7 @@ export function AdminPage() {
             <X size={18} />
           </button>
         </div>
-        <span className="admin-sidebar__label">Content studio</span>
+        <span className="admin-sidebar__label">GoUG Admin</span>
         <nav>
           {adminNav.map(({ label, icon: Icon }) => (
             <button
@@ -178,7 +178,7 @@ export function AdminPage() {
             <Menu size={20} />
           </button>
           <div>
-            <p className="eyebrow">Content studio</p>
+            <p className="eyebrow">Admin dashboard</p>
             <h1>{active}</h1>
           </div>
           {(active === "Overview" || active === "Places") && (

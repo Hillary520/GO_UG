@@ -212,6 +212,15 @@ await record(
     return `${markers} mapped Uganda places are visible.`;
   }
 );
+await record(mapJourney, "Open a place in the full built-in map", async () => {
+  await page.goto(`${baseUrl}#/places/bwindi`, { waitUntil: "networkidle" });
+  await page.getByRole("link", { name: "View full map" }).click();
+  await page.waitForURL(/#\/map\?place=bwindi$/);
+  await page.locator(".maplibregl-canvas").waitFor({ timeout: 20000 });
+  const markers = await page.locator(".goug-map-marker").count();
+  expect(markers === 1, `Expected the selected place marker, found ${markers}.`);
+  return "Place detail stayed inside GoUG and opened its focused full map.";
+});
 
 const bookingJourney = journeyNames[4];
 await record(
@@ -242,14 +251,16 @@ await record(
 );
 await record(
   bookingJourney,
-  "Confirm the request in Content studio",
+  "Open Admin from Profile and confirm the request",
   async () => {
-    await page.goto(`${baseUrl}#/admin`, { waitUntil: "networkidle" });
+    await page.goto(`${baseUrl}#/profile`, { waitUntil: "networkidle" });
+    await page.getByRole("link", { name: /Open admin dashboard/ }).click();
+    await page.waitForURL(/#\/admin$/);
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.getByRole("button", { name: "Bookings" }).click();
     await page.getByRole("button", { name: "Confirm" }).click();
     await page.locator(".request-status--confirmed").waitFor();
-    return "Content studio confirmed the traveller request.";
+    return "The prominent Profile entry opened Admin and confirmed the request.";
   }
 );
 await record(
@@ -311,7 +322,7 @@ await record(reviewJourney, "Seed a pending traveller review", async () => {
 });
 await record(
   reviewJourney,
-  "Publish the review in Content studio",
+  "Publish the review in Admin",
   async () => {
     await page.goto(`${baseUrl}#/admin`, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Open menu" }).click();

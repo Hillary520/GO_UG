@@ -6,6 +6,18 @@
   "storage": {
     "rules": "storage.rules"
   },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "GoUG",
+        "supportEmail": "92t.hillary@gmail.com",
+        "authorizedRedirectUris": [
+          "https://tourism-9e002.firebaseapp.com/__/auth/handler"
+        ]
+      }
+    }
+  },
   "hosting": {
     "public": "dist/client",
     "ignore": [

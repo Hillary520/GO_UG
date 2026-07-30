@@ -5,6 +5,10 @@ const config: CapacitorConfig = {
   appName: "GoUG",
   webDir: "dist/client",
   backgroundColor: "#0b2418",
+  server: {
+    url: "https://hillary520.github.io/GO_UG/",
+    cleartext: false
+  },
   android: {
     allowMixedContent: false
   },

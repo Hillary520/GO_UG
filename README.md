@@ -5,6 +5,8 @@ Firebase and Capacitor. It currently runs with a complete seeded catalogue and
 local persistence, so the product can be reviewed before a Firebase project is
 connected.
 
+Public web app: <https://hillary520.github.io/GO_UG/>
+
 ## What is implemented
 
 - Branded welcome and guest/sign-in entry.
@@ -68,8 +70,10 @@ npm run android:open
 ```
 
 Android Studio is required for signing, emulator/device testing, and creating
-the release Android App Bundle. Replace the generated launcher art and verify
-the current Google Play target API requirement before submission.
+the release Android App Bundle. The Android container loads the public GitHub
+Pages deployment and the PWA service worker retains its app shell for weak
+connections. Replace the generated launcher art and verify the current Google
+Play target API requirement before submission.
 
 ## Important production work
 
